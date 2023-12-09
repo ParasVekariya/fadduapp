@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "20979066646",
+    "project_id": "fadduapp",
+    "storage_bucket": "fadduapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:20979066646:android:98df5dc416d6fa202fd237",
+        "android_client_info": {
+          "package_name": "com.example.fadduapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "20979066646-6psfr6pem45jb4crg8shpohvu31coije.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fadduapp",
+            "certificate_hash": "555cf5d140259487abe7cfb65b5ca6ae82ae4f5f"
+          }
+        },
+        {
+          "client_id": "20979066646-2oscsg69br2klb0ru48nieo5ntm53q93.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-sFQEgCz40sSzBAOrzgxcXK5x415eCvo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "20979066646-2oscsg69br2klb0ru48nieo5ntm53q93.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "20979066646-fe37a1oqccohbi46kpquj5slb5qr48vs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fadduapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

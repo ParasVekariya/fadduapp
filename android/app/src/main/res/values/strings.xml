@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource>
+    <string name="app_name">"fadduApp"</string>
+    <string name="facebook_app_id">353274100578045</string>
+    <string name="fb_login_protocol_scheme">fb353274100578045</string>
+    <string name="facebook_client_token">50479edc0d5f22ea2b4b3649a4d4f7b0</string>
+
+</resource>
