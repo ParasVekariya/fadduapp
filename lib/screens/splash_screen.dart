@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:fadduapp/provider/sign_in_provider.dart';
 import 'package:fadduapp/screens/home_screen.dart';
 import 'package:fadduapp/screens/login_screen.dart';
-import 'package:fadduapp/utils/config.dart';
 import 'package:fadduapp/utils/next_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -23,9 +22,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     final sp = context.read<SignInProvider>();
     super.initState();
-
     Timer(const Duration(seconds: 1, milliseconds: 900), () {
       sp.isSignedIn == false
+          // not logged in yet and after the delay go to main login screen
           ? nextScreen(context, const LoginScreen())
           : nextScreen(context, const HomeScreen());
     });

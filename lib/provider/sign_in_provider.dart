@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fadduapp/utils/config.dart';
-import 'package:fadduapp/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -13,12 +12,7 @@ import 'package:twitter_login/entity/auth_result.dart';
 import 'package:twitter_login/twitter_login.dart';
 
 class SignInProvider extends ChangeNotifier {
-  // instance of firebase auth
-
-  // for facebook part
-  Map<String, dynamic>? _userData;
-  AccessToken? _accessToken;
-  bool _checking = true;
+  // instance of firebase auth for different login types
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final FacebookAuth facebookAuth = FacebookAuth.instance;
@@ -28,6 +22,7 @@ class SignInProvider extends ChangeNotifier {
       apiSecretKey: Config.secretkey_twitter,
       redirectURI: "fadduapp://");
 
+  // siged in flag
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
 
@@ -56,12 +51,14 @@ class SignInProvider extends ChangeNotifier {
     checkSignInUser();
   }
 
+  // waits for the string to return signed in
   Future checkSignInUser() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     _isSignedIn = s.getBool("signed_in") ?? false;
     notifyListeners();
   }
 
+  // sets the string to signed in from shared preferences
   Future setSignIn() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     s.setBool("signed_in", true);
@@ -76,9 +73,10 @@ class SignInProvider extends ChangeNotifier {
         await googleSignIn.signIn();
 
     if (googleSignInAccount != null) {
-      // excecute our authentication
+      // excecute our authentication when account exits
 
       try {
+        // wait for authentication and store the user data
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
         final AuthCredential credential = GoogleAuthProvider.credential(
@@ -86,7 +84,7 @@ class SignInProvider extends ChangeNotifier {
           idToken: googleSignInAuthentication.idToken,
         );
 
-        // sign in to firebase user
+        // sign in the user to firebase user
         final User userDetails =
             (await firebaseAuth.signInWithCredential(credential)).user!;
 
@@ -96,8 +94,12 @@ class SignInProvider extends ChangeNotifier {
         _imageUrl = userDetails.photoURL;
         _provider = "GOOGLE";
         _uid = userDetails.uid;
+
+        // notify our lisseners about the new status
         notifyListeners();
-      } on FirebaseAuthException catch (e) {
+      }
+      // error catch block for sign in
+      on FirebaseAuthException catch (e) {
         switch (e.code) {
           case "account-exists-with-different-credential":
             _errorCode = "You already have an account with us";
@@ -124,44 +126,6 @@ class SignInProvider extends ChangeNotifier {
   }
 
   // sign in with facebook account
-
-  Future _checkForLogin() async {
-    final accessToken = await facebookAuth.accessToken;
-
-    _checking = false;
-
-    if (accessToken != null) {
-      print(accessToken.toJson());
-      final userData = await facebookAuth.getUserData();
-      _accessToken = accessToken;
-      _userData = userData;
-    } else {
-      _login();
-    }
-  }
-
-  Future _login() async {
-    final LoginResult result = await facebookAuth.login();
-
-    if (result.status == LoginStatus.success) {
-      _accessToken = result.accessToken;
-
-      final userData = await facebookAuth.getUserData();
-      _userData = userData;
-    } else {
-      print(result.status);
-      print(result.message);
-
-      _checking = false;
-    }
-  }
-
-  Future _logout() async {
-    await facebookAuth.logOut();
-    _accessToken = null;
-    _userData = null;
-  }
-
   Future signInWithFacebook() async {
     // final LoginResult result = await facebookAuth
     //     .login(permissions: ['email', 'public_profile', 'user_name']);
@@ -232,43 +196,24 @@ class SignInProvider extends ChangeNotifier {
     final AuthResult authResult = await twitterLogin.loginV2();
     if (authResult.status == TwitterLoginStatus.loggedIn) {
       try {
-        // final User userDetails =
-        //     (await firebaseAuth.signInWithCredential(credential)).user!;
-        // final userDetails = authResult.user;
         final AuthCredential credential = TwitterAuthProvider.credential(
             accessToken: authResult.authToken!,
             secret: authResult.authTokenSecret!);
         // await firebaseAuth.signInWithCredential(credential);
         final User userDetails =
             (await firebaseAuth.signInWithCredential(credential)).user!;
-        // if (userDetails != null) {
-        // final AuthCredential credential = TwitterAuthProvider.credential(
-        //     accessToken: authResult.authToken!,
-        //     secret: authResult.authTokenSecret!);
-        // await firebaseAuth.signInWithCredential(credential);
 
         // ---------------------save all the data---------------------
         // if (userDetails != null) {
         _name = userDetails.displayName;
 
-        // NOTWORKING
+        // NOTWORKING for email part due to some privacy issues by twitter's new policy
         _email = firebaseAuth.currentUser!.providerData[0].email;
-        // _email = userDetails.email;
-
-        // if (firebaseAuth.currentUser != null) {
-        //   // _email = firebaseAuth.currentUser!.email;
-        //   _email = firebaseAuth.currentUser!.providerData[0].email;
-        // }
-        // _email = FirebaseAuth.instance.currentUser!.email;
         _imageUrl = userDetails.photoURL;
         _uid = userDetails.uid;
         _provider = "TWITTER";
         _hasError = false;
         notifyListeners();
-        //  } else {
-        //   print("User is null");
-        // }
-        // }
       } on FirebaseAuthException catch (e) {
         switch (e.code) {
           case "account-exists-with-different-credential":
@@ -296,13 +241,15 @@ class SignInProvider extends ChangeNotifier {
   }
   // ---------------------------Entry for cloud firestore---------------------------
 
+  // pass the user id and it will fetch details from firebase
   Future getUserDataFromfirestore(uid) async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
         .get()
         .then((DocumentSnapshot snapshot) {
-      // print("choosle");
+      // \\debug purpose
+      // print("nhi ho rha");
       // print(snapshot);
       _uid = snapshot['uid'];
       _name = snapshot['name'];
@@ -312,22 +259,9 @@ class SignInProvider extends ChangeNotifier {
     });
   }
 
-  Future dbFirestore(uid) async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(uid)
-        .get()
-        .then((DocumentSnapshot snapshot) => {
-              _uid = snapshot['uid'],
-              _name = snapshot['name'],
-              _email = snapshot['email'],
-              _imageUrl = snapshot['image_url'],
-              _provider = snapshot['provider'],
-            });
-  }
-
   // ----------------------------Non existing user----------------------------
 
+  // If there is a new entry , then save to firebase and then procedd
   Future saveDataToFirestore() async {
     final DocumentReference r =
         FirebaseFirestore.instance.collection("users").doc(uid);
@@ -341,36 +275,18 @@ class SignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // save data in shared base which will be accesible by all
   Future saveDataToSharedPreferences() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
-    // await s.setString('name', _name!);
-    // await s.setString('email', _email!);
-    // await s.setString('uid', _uid!);
-    // await s.setString('image_url', _imageUrl!);
-    // await s.setString('provider', _provider!);
-    if (_name != null) {
-      await s.setString('name', _name!);
-    }
-
-    if (_email != null) {
-      await s.setString('email', _email!);
-    }
-
-    if (_uid != null) {
-      await s.setString('uid', _uid!);
-    }
-
-    if (_imageUrl != null) {
-      await s.setString('image_url', _imageUrl!);
-    }
-
-    if (_provider != null) {
-      await s.setString('provider', _provider!);
-    }
-
+    await s.setString('name', _name!);
+    await s.setString('email', _email!);
+    await s.setString('uid', _uid!);
+    await s.setString('image_url', _imageUrl!);
+    await s.setString('provider', _provider!);
     notifyListeners();
   }
 
+  // get data in shared base which will be accesible by all
   Future getDataFromSharedPreferences() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
     _name = s.getString('name');
@@ -410,15 +326,17 @@ class SignInProvider extends ChangeNotifier {
     s.clear();
   }
 
+  // Instance for phone based login model to store the data
   void phoneNumberUser(User user, email, name) {
     _name = name;
     _email = email;
     _imageUrl = "null";
-    _uid = user.phoneNumber;
+    _uid = user.uid;
     _provider = "Phone";
     notifyListeners();
   }
 
+  // Instance for when a new user logs in using email address and password
   void register(uid, email, firstname, secondname) {
     _name = firstname + " " + secondname;
     _email = email;

@@ -3,7 +3,7 @@ import "package:fadduapp/provider/sign_in_provider.dart";
 import "package:fadduapp/screens/forgot_password.dart";
 import "package:fadduapp/screens/home_screen.dart";
 import "package:fadduapp/screens/phoneauth_screen.dart";
-import "package:fadduapp/screens/registration_scree.dart";
+import 'package:fadduapp/screens/registration_screen.dart';
 import "package:fadduapp/utils/next_screen.dart";
 import "package:fadduapp/utils/snack_bar.dart";
 import "package:firebase_auth/firebase_auth.dart";
@@ -32,6 +32,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
 
+    // Focus nodes are used to chnage the colour of text box when focused
+    // this is acheived using focus node and fou=cus notifier
+
     _myFocusNode = FocusNode();
     _myFocusNode.addListener(_onFocusChange);
     // _myFocusNode1 = FocusNode();
@@ -40,15 +43,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onFocusChange() {
     _myFocusNotifier.value = _myFocusNode.hasFocus;
-    // _passwordFocusNotifier.value = _myFocusNode1.hasFocus;
   }
 
   void _onFocusChangepass() {
     _passwordFocusNotifier.value = _myFocusNode1.hasFocus;
-    // _passwordFocusNotifier.value = _myFocusNode1.hasFocus;
   }
 
-  // editing controller
+  // editing controllers
   final TextEditingController eController = new TextEditingController();
   final TextEditingController pController = new TextEditingController();
 
@@ -61,10 +62,11 @@ class _LoginScreenState extends State<LoginScreen> {
       RoundedLoadingButtonController();
   final RoundedLoadingButtonController phoneController =
       RoundedLoadingButtonController();
+
   @override
   Widget build(BuildContext context) {
     Color efC = const Color.fromARGB(255, 31, 26, 47);
-    // for email part
+    // ------------------for email part ------------------
     final efield = ValueListenableBuilder(
         valueListenable: _myFocusNotifier,
         builder: (_, isFocus, child) {
@@ -78,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 _myFocusNode.dispose();
                 _myFocusNotifier.dispose();
               },
+              // null check and valid address checker
               validator: (value) {
                 if (value!.isEmpty) {
                   return ("Enter your email address");
@@ -116,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ));
         });
 
-    // for pass part
+    //------------------ for pass part------------------
 
     final pfield = ValueListenableBuilder(
         valueListenable: _passwordFocusNotifier,
@@ -126,6 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: pController,
             obscureText: true,
             focusNode: _myFocusNode1,
+            // null check and min length password checker
             validator: (value) {
               RegExp regex = new RegExp(r'^.{6,}$');
               if (value!.isEmpty) {
@@ -196,35 +200,8 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Flexible(
-              //   flex: 2,
-              //   child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       children: [
-              //         Image(
-              //           image: AssetImage(Config.app_icon),
-              //           height: 80,
-              //           width: 80,
-              //           fit: BoxFit.cover,
-              //         ),
-              //         const SizedBox(
-              //           height: 20,
-              //         ),
-              //         const Text("AA GAYA MAA CHUDANE!!!!!!!!!!!!!!!!!!!!!!!!",
-              //             style: TextStyle(
-              //                 fontSize: 25, fontWeight: FontWeight.w500)),
-              //         const SizedBox(
-              //           height: 10,
-              //         ),
-              //         Text(
-              //           "Learn Authentication with provide",
-              //           style: TextStyle(fontSize: 15, color: Colors.grey[600]),
-              //         )
-              //       ]),
-              // ),
-
               Container(
-                color: Color.fromARGB(255, 31, 26, 47),
+                color: const Color.fromARGB(255, 31, 26, 47),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Form(
@@ -258,7 +235,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(
                           height: 10,
                         ),
-                        // Text("Forgot Password", style: TextStyle(color: Color.fromARGB(255, 113, 241, 227)),),
                         GestureDetector(
                           child: Text(
                             'Forgot Password',
@@ -267,11 +243,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontSize: 18,
                             ),
                           ),
-                          // child: Text(
-                          //   "Forgot Password",
-                          //   style: TextStyle(
-                          //       color: Color.fromARGB(255, 113, 241, 227)),
-                          // ),
                           onTap: () {
                             nextScreenReplace(
                                 context, const ForgotPasswordPage());
@@ -283,13 +254,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              // Form(
-              //   key: _formKey,
-              //   child: Column(children: <Widget>[efield,pfield]),
-              // ),
-
               // ADDING Rounded Buttons
               Row(
+                // adding the buttons for google, facebok, twitter, phone
                 children: [
                   const Expanded(
                       child: Divider(
@@ -351,20 +318,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.black,
                               ),
                             )),
-                        // Icon(
-                        //   // adding a icon
-                        //   FontAwesomeIcons.google,
-                        //   size: 20,
-                        //   color: Colors.white,
-                        // ),
-                        // SizedBox(
-                        //   width: 15,
-                        // ),
-                        // Text("Sign in with Google",
-                        //     style: TextStyle(
-                        //         color: Colors.white,
-                        //         fontSize: 15,
-                        //         fontWeight: FontWeight.w500)),
                       ],
                     ),
                   ),
@@ -399,20 +352,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        // Icon(
-                        //   // adding a icon
-                        //   FontAwesomeIcons.facebook,
-                        //   size: 20,
-                        //   color: Colors.white,
-                        // ),
-                        // SizedBox(
-                        //   width: 15,
-                        // ),
-                        // Text("Sign in with Facebook",
-                        //     style: TextStyle(
-                        //         color: Colors.white,
-                        //         fontSize: 15,
-                        //         fontWeight: FontWeight.w500)),
                       ],
                     ),
                   ),
@@ -425,7 +364,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // twitter login button
+                  //  ------------------ twitter login button ------------------
                   const SizedBox(
                     height: 10,
                     width: 5,
@@ -456,25 +395,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.white,
                               ),
                             )),
-                        // Icon(
-                        //   // adding a icon
-                        //   FontAwesomeIcons.twitter,
-                        //   size: 20,
-                        //   color: Colors.white,
-                        // ),
-                        // SizedBox(
-                        //   width: 15,
-                        // ),
-                        // Text("Sign in with Twitter",
-                        //     style: TextStyle(
-                        //         color: Colors.white,
-                        //         fontSize: 15,
-                        //         fontWeight: FontWeight.w500)),
                       ],
                     ),
                   ),
 
-                  // PHONE LOGIN
+                  //  ------------------ PHONE LOGIN ------------------
                   const SizedBox(
                     height: 10,
                     width: 5,
@@ -506,20 +431,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.white,
                               ),
                             )),
-                        // Icon(
-                        //   // adding a icon
-                        //   FontAwesomeIcons.phone,
-                        //   size: 20,
-                        //   color: Colors.white,
-                        // ),
-                        // SizedBox(
-                        //   width: 15,
-                        // ),
-                        // Text("Sign in with Phone",
-                        //     style: TextStyle(
-                        //         color: Colors.white,
-                        //         fontSize: 15,
-                        //         fontWeight: FontWeight.w500)),
                       ],
                     ),
                   ),
@@ -528,6 +439,8 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 20,
               ),
+
+              // ------------------ New user spifics ------------------
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -540,11 +453,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontSize: 18,
                             fontWeight: FontWeight.w500),
                       ),
-                      // Text(
-                      //   "Don't have an account?        ",
-                      //   style: TextStyle(
-                      //       color: Color.fromARGB(255, 113, 241, 227)),
-                      // ),
                     ],
                   ),
                   const SizedBox(
@@ -571,8 +479,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // handling twitter auth
+  // ------------------ handling twitter auth ------------------
   Future handleTwitterAuth() async {
+    // checks for valid internet
     final sp = context.read<SignInProvider>();
     // internet provider
     final ip = context.read<InternetProvider>();
@@ -590,7 +499,7 @@ class _LoginScreenState extends State<LoginScreen> {
           // checking whether user is in db or not
           sp.checkUserExists().then((value) async {
             if (value == true) {
-              // user exits
+              // user exits, then pass the fucntion call to handle after sign in
               await sp.getUserDataFromfirestore(sp.uid).then((value) => sp
                   .saveDataToSharedPreferences()
                   .then((value) => sp.setSignIn().then((value) {
@@ -598,7 +507,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         handleAfterSignIn();
                       })));
             } else {
-              // user does not exists
+              // user does not exists , save to shared preferences, then pass to sign in handler
               sp.saveDataToFirestore().then((value) => sp
                   .saveDataToSharedPreferences()
                   .then((value) => sp.setSignIn().then((value) {
@@ -612,7 +521,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // handling the google sign in
+  //------------------  handling the google sign in ------------------------------------
 
   Future handleGoogleSignIn() async {
     final sp = context.read<SignInProvider>();
@@ -654,7 +563,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // handling the facebookauth
+  // ------------------ handling the facebookauth ------------------------------------
 
   Future handleFacebookAuth() async {
     final sp = context.read<SignInProvider>();
@@ -696,14 +605,16 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // handle the user after sign in
+  // ------------------ handle the user after sign in ------------------------------------
 
   handleAfterSignIn() {
-    Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+    // 1/2 seconds delay and then transfer to home screen
+    Future.delayed(const Duration(milliseconds: 500)).then((value) {
       nextScreenReplace(context, const HomeScreen());
     });
   }
 
+  //  ------------------ handle the sign for email based login ------------------------------------
   void signInEP(String email, String password) async {
     final sp = context.read<SignInProvider>();
     // internet provider
@@ -748,14 +659,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       }));
             });
           });
-          //   .then((uid) => {
-          //         Fluttertoast.showToast(msg: "Login Successfull!"),
-          //         nextScreenReplace(context, const HomeScreen()),
-          //       })
-          //   .catchError((e) {
-          // Fluttertoast.showToast(msg: e!.message);
         } catch (e) {
-          print("bkl");
+          print('Error with email based login');
         }
       }
     }

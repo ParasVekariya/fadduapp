@@ -419,11 +419,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
+  // when the user want to register
   void signUp(String email, String password, String firstname,
       String secondname) async {
+    // internet checks
     final sp = context.read<SignInProvider>();
     final ip = context.read<InternetProvider>();
-    // final user = FirebaseAuth.instance.currentUser!.uid;
 
     await ip.checkInternetConnection();
 
@@ -432,13 +433,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     } else {
       if (_formKey.currentState!.validate()) {
         try {
-          // String user;
           await FirebaseAuth.instance
               .createUserWithEmailAndPassword(email: email, password: password)
               .then((value) async => {
+                    // if the new user creation is succes full go to
                     postDetailsToFirestore(sp, email, firstname, secondname)
-                    // user = FirebaseAuth.instance.currentUser!.uid
-                    // sp.register(user, email, firstname, secondname)
                   })
               .catchError((e) {
             Fluttertoast.showToast(msg: e!.message);
@@ -474,13 +473,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
+  // Post the details to the fire store with current user in the queue
   Future postDetailsToFirestore(SignInProvider sp, String email,
       String firstname, String secondname) async {
-    // call the firestore
-
-    // call the user model
-
-    // send the details to firebase cloud
+    // call the firestore and
+    // send the details to firebase cloud with register function
 
     String user = FirebaseAuth.instance.currentUser!.uid;
     sp.register(user, email, firstname, secondname);

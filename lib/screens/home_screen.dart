@@ -125,17 +125,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(
                     height: 10,
-
-                    // how to add coloured backgorund here
-                    // child: ColoredBox(
-                    //   color: Colors.blue,
-                    // ),
                   ),
                   Text(
                     "SIGNOUT",
                     style: GoogleFonts.macondo(
                         color: const Color.fromARGB(255, 31, 26, 47),
-                        // backgroundColor: Colors.blue,
                         fontSize: 15,
                         fontWeight: FontWeight.bold),
                   )
