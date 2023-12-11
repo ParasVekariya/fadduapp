@@ -1,11 +1,11 @@
+# Android Login with OAuth
+
 - [Getting Started](#getting-started)
 - [Flutter Set Up](#flutter-set-up)
 - [Getting Started with Android Studio](#getting-started-with-android-studio)
 - [Check for extra requirements](#check-for-extra-requirements)
 - [Clone the repository](#clone-the-repository)
 - [APK File](#apk-file)
-
-# Android Login with OAuth
 
 The project outlines the usage of OAuth with the login of Google, Facebook & Twitter. This also outlines the importance of Security using Software Defined Network.
 
